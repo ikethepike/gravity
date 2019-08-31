@@ -3,37 +3,48 @@
 <head>
   <title>Gravity</title>
   <meta charset="UTF-8">
-  <script src="./js/socket.js" defer>
+  <!-- script src="./js/socket.js" defer -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js" defer></script>
   <script defer>
 
-    const accel = 1
-    const timeInterval = 0.2
-    const baseSpeed = 1
+let score = 0
+let baseSpeed = 1
+let timeInterval = 0.2
+let accel = 1
 
-    const copter = {
-      y: 50,
-      speed: baseSpeed
-    }
+const copter = {
+  y: 50,
+  size: 50,
+  speed: baseSpeed
+}
 
-    function keyPressed() {
-      copter.y = copter.y - 50
-      copter.speed = baseSpeed
-    }
+function keyPressed() {
+  copter.y = copter.y - 25
+  copter.speed = baseSpeed
+}
 
-    function setup() {
-      createCanvas(500, 500);
-    }
+function setup() {
+  createCanvas(500, 500);
+}
 
-    function draw() {
-      clear()
-      copter.y = copter.y + timeInterval * copter.speed
-      copter.speed = copter.speed + accel * timeInterval
-      
-      ellipse(250, copter.y, 50, 50)
-    }
+function draw() {
+  clear()
+  copter.y = copter.y + timeInterval * copter.speed
+  copter.speed = copter.speed + accel * timeInterval
+  score += 0.05
+  
+  if (copter.y < 0 || copter.y + copter.size > 500) {
+    confirm("YEY! Your score is " + Math.round(score))
+    copter.y = 50
+    copter.size = 50
+    copter.speed = baseSpeed
+    score = 0
+  } else {
+    ellipse(250, copter.y, copter.size, copter.size)
+  }
+}
 
-    document.addEventListener('keyup', keyPressed)
+document.addEventListener('keyup', keyPressed)
 
   </script>
 </head>
