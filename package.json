@@ -1,0 +1,12 @@
+{
+  "name": "gravity",
+  "version": "1.0.0",
+  "description": "amazing gravity sim",
+  "main": "index.html",
+  "repository": "https://github.com/ikethepike/gravity",
+  "author": "rosa:dev",
+  "license": "MIT",
+  "dependencies": {
+    "vue": "^2.6.10"
+  }
+}
