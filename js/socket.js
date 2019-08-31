@@ -7,12 +7,16 @@ ws.onopen = () => {
   console.log('Connected!')
 
   interval = setInterval(() => {
+    console.log('dispatching request')
+
     // Dispatch request
     ws.send('poll:request')
   }, 66)
 }
 
 ws.onmessage = event => {
+  console.log(`Messaged received`)
+
   const { data } = event
 
   window.pressed = Boolean(data)
