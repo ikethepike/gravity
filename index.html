@@ -1,61 +1,100 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Gravity</title>
-  <meta charset="UTF-8">
-  <style>
-    canvas {
-      background-color: #CCC
-    }
-  </style>
-  <script src="./js/socket.js" defer>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js" defer></script>
-  <script defer>
+  <head>
+    <title>Gravity</title>
+    <meta charset="UTF-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      canvas {
+        background-color: #ccc;
+      }
+    </style>
+    <!-- <script src="./js/socket.js" defer> -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js"
+      defer
+    ></script>
+    <script defer>
+      let score = 0
+      let baseSpeed = 1
+      let timeInterval = 0.2
+      let accel = 1
+      let sizeAccel = 0.1
+      let canvasSize = window.innerHeight
 
-let score = 0
-let baseSpeed = 1
-let timeInterval = 0.2
-let accel = 1
-let sizeAccel = 0.1
-let canvasSize = 500
+      const copter = {
+        y: 25,
+        size: {
+          x: 50,
+          y: 26,
+        },
+        speed: baseSpeed,
+      }
 
-const copter = {
-  y: 25,
-  size: 50,
-  speed: baseSpeed
-}
+      let img
 
-function keyPressed() {
-  copter.y = copter.y - 25
-  copter.speed = baseSpeed
-}
+      function preload() {
+        img = loadImage('./img/heli.png')
+      }
 
-function setup() {
-  createCanvas(canvasSize, canvasSize);
-}
+      function keyPressed() {
+        copter.y = copter.y - 25
+        copter.speed = baseSpeed
+      }
 
-function draw() {
-  clear()
-  copter.y = copter.y + timeInterval * copter.speed
-  copter.speed = copter.speed + accel * timeInterval
-  score += 0.05
-  copter.size = copter.size + sizeAccel
-  
-  if (copter.y < copter.size / 2 || copter.y + copter.size / 2 > canvasSize) {
-    confirm("YEY! Your score is " + Math.round(score))
-    copter.y = 25
-    copter.size = 50
-    copter.speed = baseSpeed
-    score = 0
-  } else {
-    ellipse(canvasSize / 2, copter.y, copter.size, copter.size)
-  }
-}
+      function setup() {
+        createCanvas(window.innerWidth, canvasSize)
+      }
 
-document.addEventListener('keyup', keyPressed)
+      function polygon(x, y, radius, npoints) {
+        let angle = TWO_PI / npoints
+        beginShape()
+        for (let a = 0; a < TWO_PI; a += angle) {
+          let sx = x + cos(a) * radius
+          let sy = y + sin(a) * radius
+          vertex(sx, sy)
+        }
+        endShape(CLOSE)
+      }
 
-  </script>
-</head>
-<body>
-</body>
+      function draw() {
+        clear()
+        copter.y = copter.y + timeInterval * copter.speed
+
+        copter.speed = copter.speed + accel * timeInterval
+        score += 0.05
+        // copter.size.y = copter.size.y + sizeAccel
+        // copter.size.x = copter.size.x + sizeAccel
+
+        beginShape()
+        vertex(0, 0)
+        vertex(window.innerWidth, 0)
+        vertex(window.innerWidth, noise(Date.now() / 10000) * 300)
+        vertex(0, noise(Date.now() / 10000) * 400)
+        endShape(CLOSE)
+
+        if (
+          copter.y < copter.size.y / 2 ||
+          copter.y + copter.size.y / 2 > canvasSize
+        ) {
+          confirm('YEY! Your score is ' + Math.round(score))
+
+          copter.y = 25
+          // copter.size = 50
+          copter.speed = baseSpeed
+          score = 0
+        } else {
+          image(img, canvasSize / 2, copter.y, copter.size.x, copter.size.y)
+          // ellipse(canvasSize / 2, copter.y, copter.size, copter.size)
+        }
+      }
+
+      document.addEventListener('keyup', keyPressed)
+    </script>
+  </head>
+  <body></body>
 </html>
