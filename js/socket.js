@@ -20,7 +20,7 @@ ws.onmessage = event => {
   console.log(`Messaged received`)
 
   const { data } = event
-
+  console.log(data)
   window.pressed = Boolean(data)
 }
 

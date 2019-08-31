@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+
+from serial import Serial
+import time, json
+
+import asyncio
+import websockets
+
+
+# ~ def isButtonPressed():
+    # ~ with Serial('/dev/ttyUSB0', 9600, timeout=1) as ser:
+        # ~ time.sleep(1)
+        
+        # ~ while True:
+            # ~ time.sleep(0.1)
+
+            # ~ cmd='l'
+            # ~ ser.write(cmd.encode())
+        
+        # ~ if ser.in_waiting:
+        # ~ x = ser.read()          # read one byte
+            # ~ line = ser.readline()   # read a '\n' terminated line
+        
+            # ~ print(line.decode())
+        
+
+# ~ while True:
+    # ~ isButtonPressed()
+
+def isDummyButtonPressed():
+    print("dummy button, yah!")
+    return 1
+    
+
+async def sendButtonStatus(websocket, path):
+    name = await websocket.recv()
+    
+    print(name)
+
+    
+    pressed={'pressed':isDummyButtonPressed()}
+        
+    await websocket.send(str(pressed))    
+    
+    
+    cmd=str(isDummyButtonPressed())
+    
+
+start_server = websockets.serve(sendButtonStatus, "localhost", 1337)
+
+asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_forever()
+
+
+

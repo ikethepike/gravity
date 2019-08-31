@@ -1,53 +1,70 @@
 #!/usr/bin/env python3
 
 from serial import Serial
-import time, json
+import time
 
-import asyncio
-import websockets
+import threading
+
+start=time.time()
+
+# ~ def arduinoReader():
+    # ~ """thread worker function"""
+    # ~ print('Worker')
 
 
-# ~ def isButtonPressed():
-    # ~ with Serial('/dev/ttyUSB0', 9600, timeout=1) as ser:
-        # ~ time.sleep(1)
+# ~ threads = []
+# ~ for i in range(5):
+    # ~ t = threading.Thread(target=worker)
+    # ~ threads.append(t)
+    # ~ t.start()
+
+from SimpleWebSocketServer import SimpleWebSocketServer, WebSocket
+
+def isButtonPressed():
+    with Serial('/dev/ttyUSB0', 9600, timeout=1) as ser:
+        time.sleep(1)
         
-        # ~ while True:
-            # ~ time.sleep(0.1)
+        while True:
+            time.sleep(0.1)
 
-            # ~ cmd='l'
-            # ~ ser.write(cmd.encode())
+            cmd='l'
+            ser.write(cmd.encode())
         
-        # ~ if ser.in_waiting:
-        # ~ x = ser.read()          # read one byte
-            # ~ line = ser.readline()   # read a '\n' terminated line
+            if ser.in_waiting:
+                x = ser.read()          # read one byte
+                line = ser.readline()   # read a '\n' terminated line
+                break
         
-            # ~ print(line.decode())
-        
-
-# ~ while True:
-    # ~ isButtonPressed()
+        return line.decode()
 
 def isDummyButtonPressed():
-    return 1
+    global start
     
-
-async def sendButtonStatus(websocket, path):
-    name = await websocket.recv()
+    # ~ print("hello at:", time.time()- start)
     
-    print(name)
-
+    # ~ return "hello!"
+    if time.time() - start > 1:
+        start=time.time()
+        return 1
     
-    pressed={'pressed':isDummyButtonPressed()}
+    else: 
+        return 0
         
-    await websocket.send(str(pressed))    
-    
-    cmd=str(isDummyButtonPressed())
-    
+            
+class SimpleEcho(WebSocket):
 
-start_server = websockets.serve(sendButtonStatus, "localhost", 1337)
+    def handleMessage(self):
+        # echo message back to client
+        print(self.address, 'message handler')
+        cmd=str(isDummyButtonPressed())
+        print("cmd sent: ", cmd)
+        self.sendMessage(cmd)
 
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+    def handleConnected(self):
+        print(self.address, 'connected')
 
+    def handleClose(self):
+        print(self.address, 'closed')
 
-
+server = SimpleWebSocketServer('', 1337, SimpleEcho)
+server.serveforever()
