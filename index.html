@@ -35,15 +35,48 @@
         speed: baseSpeed,
       }
 
+      function keyPressed() {
+        copter.y = copter.y - 25
+        copter.speed = baseSpeed
+      }
+
+      const ws = new WebSocket('ws://localhost:1337')
+
+      window.pressed = false
+
+      const init = () => {}
+
+      ws.onopen = () => {
+        console.log('Connected!')
+
+        setInterval(() => {
+          console.log('dispatching request')
+
+          // Dispatch request
+          ws.send('poll:request')
+        }, 66)
+      }
+
+      ws.onmessage = event => {
+        console.log(`Messaged received`)
+
+        const { data } = event
+        console.log(data)
+        keyPressed()
+      }
+
+      ws.onclose = () => {
+        window.pressed = false
+      }
+
+      ws.onerror = event => {
+        console.error('Failed to connected to WS server', event)
+      }
+
       let img
 
       function preload() {
         img = loadImage('./img/heli.png')
-      }
-
-      function keyPressed() {
-        copter.y = copter.y - 25
-        copter.speed = baseSpeed
       }
 
       function setup() {
@@ -96,5 +129,4 @@
       document.addEventListener('keyup', keyPressed)
     </script>
   </head>
-  <body></body>
 </html>
