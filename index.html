@@ -1,7 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="./index.js">
+  <meta charset="UTF-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js"></script>
+  <script>
+
+const copter = {
+  y: 50
+}
+
+function keyPressed() {
+  
+}
+
+function setup() {
+  createCanvas(500, 500);
+}
+
+function draw() {
+
+  ellipse(250, 250, 50, copter.y)
+}
+
+document.addEventListener('keyup', keyPressed)
+
+  </script>
 </head>
 <body>
 </body>

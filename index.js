@@ -13,7 +13,7 @@ let xFruit = 0
 let yFruit = 0
 let scoreElem
 
-function setup() {
+function _setup() {
   scoreElem = createDiv('Score = 0')
   scoreElem.position(20, 20)
   scoreElem.id = 'score'
@@ -162,5 +162,14 @@ function keyPressed() {
       break
   }
 }
+
+function setup() {
+  console.log('baa')
+}
+
+function draw() {
+  ellipse(50, 50, 80, 80)
+}
+console.log('go')
 
 document.addEventListener('keyup', keyPressed)
