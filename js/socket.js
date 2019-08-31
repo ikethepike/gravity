@@ -3,10 +3,12 @@ let interval = null
 
 window.pressed = false
 
+const init = () => {}
+
 ws.onopen = () => {
   console.log('Connected!')
 
-  interval = setInterval(() => {
+  setInterval(() => {
     console.log('dispatching request')
 
     // Dispatch request
@@ -24,8 +26,6 @@ ws.onmessage = event => {
 
 ws.onclose = () => {
   window.pressed = false
-
-  clearInterval(interval)
 }
 
 ws.onerror = event => {
