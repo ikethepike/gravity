@@ -15,9 +15,7 @@ ws.onopen = () => {
 ws.onmessage = event => {
   const { data } = event
 
-  const input = JSON.parse(data).pressed
-
-  window.pressed = Boolean(input)
+  window.pressed = Boolean(data)
 }
 
 ws.onclose = () => {
