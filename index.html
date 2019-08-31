@@ -54,15 +54,17 @@
 
           // Dispatch request
           ws.send('poll:request')
-        }, 66)
+        }, 100)
       }
 
       ws.onmessage = event => {
         console.log(`Messaged received`)
 
         const { data } = event
-        console.log(data)
-        keyPressed()
+        if (data=="1") {
+            console.log(data)
+            keyPressed()
+        }
       }
 
       ws.onclose = () => {

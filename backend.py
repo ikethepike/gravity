@@ -3,64 +3,77 @@
 from serial import Serial
 import time
 
-import threading
+from SimpleWebSocketServer import SimpleWebSocketServer, WebSocket
+
 
 start=time.time()
 
-# ~ def arduinoReader():
-    # ~ """thread worker function"""
-    # ~ print('Worker')
+SERIALPORT="/dev/ttyUSB0"
+# ~ SERIALPORT="/dev/ttyACM0"
 
+DUMMY= False
+DUMMY_INTERVAL = 1
 
-# ~ threads = []
-# ~ for i in range(5):
-    # ~ t = threading.Thread(target=worker)
-    # ~ threads.append(t)
-    # ~ t.start()
-
-from SimpleWebSocketServer import SimpleWebSocketServer, WebSocket
-
-def isButtonPressed():
-    with Serial('/dev/ttyUSB0', 9600, timeout=1) as ser:
-        time.sleep(1)
-        
-        while True:
-            time.sleep(0.1)
-
-            cmd='l'
-            ser.write(cmd.encode())
-        
-            if ser.in_waiting:
-                x = ser.read()          # read one byte
-                line = ser.readline()   # read a '\n' terminated line
-                break
-        
-        return line.decode()
 
 def isDummyButtonPressed():
     global start
     
-    # ~ print("hello at:", time.time()- start)
-    
-    # ~ return "hello!"
-    if time.time() - start > 1:
+    if time.time() - start > DUMMY_INTERVAL:
         start=time.time()
         return 1
     
     else: 
         return 0
-        
+
+lastPressed=time.time()
+previous="not pressed"
+
+def simpleRead():
+    global lastPressed,previous
+    
+    pressed="0"
+    with Serial(SERIALPORT, 9600, timeout=1) as ser:
+        cmd='l'
+        ser.write(cmd.encode())
+        time.sleep(0.1)
+        state=""
+        bytesToRead =ser.inWaiting()  # get the amount of bytes available at the input queue
+        if bytesToRead:
+            line = ser.read(bytesToRead).decode()  # read the bytes            # ~ self.output_queue.put(line)
+            state = line.splitlines()
+            if int(state[0])==1:
+
+                pressed="0"
+                previous="not pressed"
+            else:
+                if time.time()-lastPressed >0.1 and previous=="not pressed":                    
+                    pressed="1"
+                    lastPressed=time.time()
+                    previous="pressed"
+                    
+                else :
+                    pressed="0"
+
             
+    return pressed
+
+    
 class SimpleEcho(WebSocket):
 
+    
     def handleMessage(self):
         # echo message back to client
         print(self.address, 'message handler')
-        cmd=str(isDummyButtonPressed())
+        if DUMMY:
+            cmd=str(isDummyButtonPressed())
+        else:
+            cmd=str(simpleRead())
         print("cmd sent: ", cmd)
         self.sendMessage(cmd)
 
     def handleConnected(self):
+        global arduino
+        
         print(self.address, 'connected')
 
     def handleClose(self):
