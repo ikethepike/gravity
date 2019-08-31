@@ -36,11 +36,13 @@ async def sendButtonStatus(websocket, path):
     
     print(name)
 
+    
     pressed={'pressed':isDummyButtonPressed()}
         
-    await websocket.send(pressed)    
-
-    print("button is", pressed)
+    await websocket.send(str(pressed))    
+    
+    cmd=str(isDummyButtonPressed())
+    
 
 start_server = websockets.serve(sendButtonStatus, "localhost", 1337)
 
