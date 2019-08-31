@@ -3,6 +3,11 @@
 <head>
   <title>Gravity</title>
   <meta charset="UTF-8">
+  <style>
+    canvas {
+      background-color: #CCC
+    }
+  </style>
   <script src="./js/socket.js" defer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js" defer></script>
   <script defer>
@@ -11,9 +16,11 @@ let score = 0
 let baseSpeed = 1
 let timeInterval = 0.2
 let accel = 1
+let sizeAccel = 0.1
+let canvasSize = 500
 
 const copter = {
-  y: 50,
+  y: 25,
   size: 50,
   speed: baseSpeed
 }
@@ -24,7 +31,7 @@ function keyPressed() {
 }
 
 function setup() {
-  createCanvas(500, 500);
+  createCanvas(canvasSize, canvasSize);
 }
 
 function draw() {
@@ -32,15 +39,16 @@ function draw() {
   copter.y = copter.y + timeInterval * copter.speed
   copter.speed = copter.speed + accel * timeInterval
   score += 0.05
+  copter.size = copter.size + sizeAccel
   
-  if (copter.y < 0 || copter.y + copter.size > 500) {
+  if (copter.y < copter.size / 2 || copter.y + copter.size / 2 > canvasSize) {
     confirm("YEY! Your score is " + Math.round(score))
-    copter.y = 50
+    copter.y = 25
     copter.size = 50
     copter.speed = baseSpeed
     score = 0
   } else {
-    ellipse(250, copter.y, copter.size, copter.size)
+    ellipse(canvasSize / 2, copter.y, copter.size, copter.size)
   }
 }
 
