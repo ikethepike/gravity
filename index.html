@@ -1,37 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Gravity</title>
   <meta charset="UTF-8">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js"></script>
   <script>
 
-const accel = 1
-const timeInterval = 0.2
-const baseSpeed = 1
+    const accel = 1
+    const timeInterval = 0.2
+    const baseSpeed = 1
 
-const copter = {
-  y: 50,
-  speed: baseSpeed
-}
+    const copter = {
+      y: 50,
+      speed: baseSpeed
+    }
 
-function keyPressed() {
-  copter.y = copter.y - 50
-  copter.speed = baseSpeed
-}
+    function keyPressed() {
+      copter.y = copter.y - 50
+      copter.speed = baseSpeed
+    }
 
-function setup() {
-  createCanvas(500, 500);
-}
+    function setup() {
+      createCanvas(500, 500);
+    }
 
-function draw() {
-  clear()
-  copter.y = copter.y + timeInterval * copter.speed
-  copter.speed = copter.speed + accel * timeInterval
-  
-  ellipse(250, copter.y, 50, 50)
-}
+    function draw() {
+      clear()
+      copter.y = copter.y + timeInterval * copter.speed
+      copter.speed = copter.speed + accel * timeInterval
+      
+      ellipse(250, copter.y, 50, 50)
+    }
 
-document.addEventListener('keyup', keyPressed)
+    document.addEventListener('keyup', keyPressed)
 
   </script>
 </head>
