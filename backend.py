@@ -8,8 +8,8 @@ from SimpleWebSocketServer import SimpleWebSocketServer, WebSocket
 
 start = time.time()
 
-SERIALPORT = "/dev/ttyUSB0"
-# ~ SERIALPORT="/dev/ttyACM0"
+# ~ SERIALPORT = "/dev/ttyUSB0"
+SERIALPORT="/dev/ttyACM0"
 
 DUMMY = False
 DUMMY_INTERVAL = 1

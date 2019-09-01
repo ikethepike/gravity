@@ -109,9 +109,10 @@
 
         setInterval(() => {
           // Dispatch request
+          ws.send('poll:request')
+         
           if (ws.readyState !== ws.OPEN) {
             console.log('dispatching request')
-            ws.send('poll:request')
           } else {
             if (!warned) {
               warned = true
