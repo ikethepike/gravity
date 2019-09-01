@@ -8,6 +8,8 @@ from SimpleWebSocketServer import SimpleWebSocketServer, WebSocket
 
 start = time.time()
 
+BAUDRATE= 9600
+
 # ~ SERIALPORT = "/dev/ttyUSB0"
 SERIALPORT="/dev/ttyACM0"
 
@@ -34,7 +36,7 @@ def simpleRead():
     global lastPressed, previous
 
     pressed = "0"
-    with Serial(SERIALPORT, 9600, timeout=1) as ser:
+    with Serial(SERIALPORT, BAUDRATE, timeout=1) as ser:
         cmd = "l"
         ser.write(cmd.encode())
         time.sleep(0.1)
