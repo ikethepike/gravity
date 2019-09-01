@@ -54,7 +54,12 @@
       let accel = 1
       let sizeAccel = 0.1
       let canvasSize = dimensions.y
+      let frames = 0
 
+      const init = {
+        floor: Math.random() * 5,
+        ceiling: Math.random() * 5,
+      }
       const mutationFactor = 12
 
       var bgImg
@@ -188,6 +193,14 @@
         // fill('#03A187')
         fill('#000000')
 
+        frames++
+
+        const introTimeSeconds = 10
+
+        if (frames < introTimeSeconds * 60) {
+          lerp()
+        }
+
         // Draw the ceiling
 
         const ceiling = {
@@ -195,7 +208,7 @@
           v2: { x: dimensions.x, y: 0 },
           v3: {
             x: dimensions.x,
-            y: noise(Date.now() / 10000 + baseSpeed) * (dimensions.y / 2),
+            y: noise(Math.random() * 5 + baseSpeed) * (dimensions.y / 2),
           },
           v4: { x: 0, y: noise(Date.now() / 10000) * (dimensions.y / 2) },
         }
