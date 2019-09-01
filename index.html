@@ -202,14 +202,16 @@
 
         // Draw the ceiling
 
+        const modifier = (frames / 1000 + 1)  
+
         const ceiling = {
           v1: { x: 0, y: 0 },
           v2: { x: dimensions.x, y: 0 },
           v3: {
             x: dimensions.x,
-            y: noise(Date.now() / 10000 + baseSpeed) * (dimensions.y / 2),
+            y: noise(Date.now() / 10000 + baseSpeed) * (dimensions.y / 2.5  ),
           },
-          v4: { x: 0, y: noise(Date.now() / 10000) * (dimensions.y / 2) },
+          v4: { x: 0, y: noise(Date.now() / 10000) * (dimensions.y / 2.5) },
         }
 
         beginShape()
@@ -223,11 +225,11 @@
         const floor = {
           v1: {
             x: 0,
-            y: noise(Date.now() / 10000) * ((dimensions.y * 2) / 2),
+            y: noise(Date.now() / 10000) * ((dimensions.y * 5) / (2 * modifier)),
           },
           v2: {
             x: dimensions.x,
-            y: noise(Date.now() / 10000 + baseSpeed) * ((dimensions.y * 2) / 2),
+            y: noise(Date.now() / 10000 + baseSpeed) * ((dimensions.y * 5) / (2  * modifier)),
           },
           v3: { x: dimensions.x, y: dimensions.y },
           v4: { x: 0, y: dimensions.y },
