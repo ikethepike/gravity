@@ -77,6 +77,8 @@
         speed: baseSpeed,
       }
 
+      let positionSet = false
+
       let climbingTimeout = null
 
       function keyPressed() {
@@ -197,10 +199,6 @@
 
         const introTimeSeconds = 10
 
-        if (frames < introTimeSeconds * 60) {
-          lerp()
-        }
-
         // Draw the ceiling
 
         const ceiling = {
@@ -208,7 +206,7 @@
           v2: { x: dimensions.x, y: 0 },
           v3: {
             x: dimensions.x,
-            y: noise(Math.random() * 5 + baseSpeed) * (dimensions.y / 2),
+            y: noise(Date.now() / 10000 + baseSpeed) * (dimensions.y / 2),
           },
           v4: { x: 0, y: noise(Date.now() / 10000) * (dimensions.y / 2) },
         }
@@ -241,22 +239,29 @@
         vertex(floor.v4.x, floor.v4.y)
         endShape(CLOSE)
 
-        // Let's calculate the points of intersection
-        image(img, dimensions.x / 2, copter.y, copter.size.x, copter.size.y)
-
         const intersections = {
           ceiling: ceiling.v3.y + (ceiling.v4.y - ceiling.v3.y) * 0.5,
           floor: floor.v1.y + (floor.v2.y - floor.v1.y) * 0.5 - copter.size.y,
         }
 
+        if (!positionSet) {
+          positionSet = true
+          copter.y =
+            intersections.floor -
+            (intersections.floor - intersections.ceiling) / 2
+        }
+
+        // Let's calculate the points of intersection
+        image(img, dimensions.x / 2, copter.y, copter.size.x, copter.size.y)
+
         if (copter.y <= intersections.ceiling) {
           console.log('ceiling')
-          // onEnd()
+          onEnd()
         }
 
         if (copter.y >= intersections.floor) {
           console.log('Floor')
-          // onEnd()
+          onEnd()
         }
 
         if (
