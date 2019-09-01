@@ -87,17 +87,6 @@ canvas {
   font-family: 'Invasion2000', monospace;
 }
 
-@keyframes fade-up {
-  0% {
-    transform: translateY(10vh);
-  }
-}
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-}
-
 @keyframes heli {
   0% {
     transform: translateY(1rem);
@@ -126,8 +115,32 @@ body:not(.game-over) #game-over {
   width: 100%;
   height: 100%;
   display: flex;
+  z-index: 300000;
   position: absolute;
   align-items: center;
+  flex-flow: column wrap;
   background: tomato;
   justify-content: center;
+  font-family: 'Invasion2000', monospace;
+  animation: fade-in 2s steps(12, end) 1;
+}
+
+#game-over div {
+  width: 100%;
+  text-align: center;
+}
+
+#game-over h2 {
+  font-size: 3rem;
+}
+
+@keyframes fade-up {
+  0% {
+    transform: translateY(10vh);
+  }
+}
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
 }

@@ -18,7 +18,15 @@
     </div>
 
     <div id="game-over">
-      GAME OVER YOUR SCORE IS: <span id="final-score">INSERT SCORE</span>
+      <div>
+        <h2>Game over</h2>
+      </div>
+      <div>
+        <h3>Your score is:</h3>
+      </div>
+      <div>
+        <span id="final-score"></span>
+      </div>
     </div>
 
     <script
@@ -86,10 +94,6 @@
 
       const ws = new WebSocket('ws://localhost:1337')
 
-      window.pressed = false
-
-      const init = () => {}
-
       ws.onopen = () => {
         console.log('Connected!')
 
@@ -130,6 +134,7 @@
 
       const onEnd = () => {
         document.body.classList.add('game-over')
+        document.querySelector('#final-score').innerHTML(Math.round(score))
         started = false
       }
 
@@ -161,7 +166,7 @@
         copter.y = copter.y + timeInterval * copter.speed
 
         copter.speed = copter.speed + accel * timeInterval
-        score += 0.05
+        score += 5
         // copter.size.y = copter.size.y + sizeAccel
         // copter.size.x = copter.size.x + sizeAccel
 
