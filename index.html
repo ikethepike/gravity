@@ -4,13 +4,15 @@
     <title>Gravity</title>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="css/main.css" />
-    <style></style>
   </head>
+
   <body>
+    <span id="current-score"></span>
+
     <div id="intro-bumper">
       <div id="intro-background"></div>
       <div id="intro-helicopter"></div>
-      <h1 id="intro-text">Helicopter Escape</h1>
+      <h1 id="intro-text">Helicopter Run</h1>
       <button id="start-game">Start Game</button>
       <footer id="copyright">
         <small>© Three very tired developers late last night</small>
@@ -35,8 +37,11 @@
     ></script>
     <script defer>
       let started = false
+      let warned = false
 
       const song = new Audio('./audio/karma.aac')
+
+      const currentScore = document.querySelector('#current-score')
 
       const dimensions = {
         x: window.innerWidth,
@@ -77,8 +82,6 @@
         iterations = 0
 
         climbingTimeout = () => {
-          console.log('ran')
-
           copter.y -= 25 / 60
           iterations++
 
@@ -98,13 +101,21 @@
         console.log('Connected!')
 
         setInterval(() => {
-          console.log('dispatching request')
-
           // Dispatch request
           if (ws.readyState !== ws.OPEN) {
+            console.log('dispatching request')
             ws.send('poll:request')
+          } else {
+            if (!warned) {
+              warned = true
+              console.warn('WS not open')
+            }
           }
         }, 100)
+      }
+
+      ws.onerror = event => {
+        console.error('WS Error', event)
       }
 
       ws.onmessage = event => {
@@ -117,8 +128,9 @@
         }
       }
 
-      ws.onclose = () => {
+      ws.onclose = event => {
         window.pressed = false
+        console.error(`Connection to WS closed`, event)
       }
 
       ws.onerror = event => {
@@ -134,7 +146,7 @@
 
       const onEnd = () => {
         document.body.classList.add('game-over')
-        document.querySelector('#final-score').innerHTML(Math.round(score))
+        document.querySelector('#final-score').innerHTML = Math.round(score)
         started = false
       }
 
@@ -167,6 +179,8 @@
 
         copter.speed = copter.speed + accel * timeInterval
         score += 5
+
+        currentScore.innerHTML = score
         // copter.size.y = copter.size.y + sizeAccel
         // copter.size.x = copter.size.x + sizeAccel
 
