@@ -3,28 +3,44 @@
   <head>
     <title>Gravity</title>
     <meta charset="UTF-8" />
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-      }
-      canvas {
-        background-color: #ccc;
-      }
-    </style>
-    <!-- <script src="./js/socket.js" defer> -->
+    <link rel="stylesheet" href="css/main.css" />
+    <style></style>
+  </head>
+  <body>
+    <div id="intro-bumper">
+      <div id="intro-background"></div>
+      <div id="intro-helicopter"></div>
+      <h1 id="intro-text">Helicopter Escape</h1>
+      <button id="start-game">Start Game</button>
+      <footer id="copyright">
+        <small>© Three very tired developers late last night</small>
+      </footer>
+    </div>
+
+    <div id="game-over">
+      GAME OVER YOUR SCORE IS: <span id="final-score">INSERT SCORE</span>
+    </div>
+
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js"
       defer
     ></script>
     <script defer>
+      let started = false
+
+      const song = new Audio('./audio/karma.aac')
+
+      const dimensions = {
+        x: window.innerWidth,
+        y: window.innerHeight,
+      }
+
       let score = 0
       let baseSpeed = 1
       let timeInterval = 0.2
       let accel = 1
       let sizeAccel = 0.1
-      let canvasSize = window.innerHeight
+      let canvasSize = dimensions.y
 
       const mutationFactor = 12
 
@@ -35,7 +51,7 @@
       var scrollSpeed = 2
 
       const copter = {
-        y: window.innerHeight / 2,
+        y: dimensions.y / 2,
         size: {
           x: 100,
           y: 52,
@@ -81,7 +97,9 @@
           console.log('dispatching request')
 
           // Dispatch request
-          ws.send('poll:request')
+          if (ws.readyState !== ws.OPEN) {
+            ws.send('poll:request')
+          }
         }, 100)
       }
 
@@ -110,13 +128,20 @@
         bg = loadImage('./img/cave.jpg')
       }
 
+      const onEnd = () => {
+        document.body.classList.add('game-over')
+        started = false
+      }
+
       function setup() {
-        createCanvas(window.innerWidth, canvasSize)
+        createCanvas(dimensions.x, dimensions.y)
 
         x2 = width
       }
 
       function draw() {
+        if (!started) return
+
         clear()
 
         // Loop the background
@@ -141,46 +166,100 @@
         // copter.size.x = copter.size.x + sizeAccel
 
         // Set the color
-        fill('#03A187')
+        // fill('#03A187')
+        fill('#000000')
 
         // Draw the ceiling
 
+        const ceiling = {
+          v1: { x: 0, y: 0 },
+          v2: { x: dimensions.x, y: 0 },
+          v3: {
+            x: dimensions.x,
+            y: noise(Date.now() / 10000 + baseSpeed) * (dimensions.y / 2),
+          },
+          v4: { x: 0, y: noise(Date.now() / 10000) * (dimensions.y / 2) },
+        }
+
         beginShape()
-        vertex(0, 0)
-        vertex(window.innerWidth, 0)
-        vertex(
-          window.innerWidth,
-          noise(Date.now() / 10000 + baseSpeed) * (window.innerHeight / 2)
-        )
-        vertex(0, noise(Date.now() / 10000) * (window.innerHeight / 2))
+        vertex(ceiling.v1.x, ceiling.v1.y)
+        vertex(ceiling.v2.x, ceiling.v2.y)
+        vertex(ceiling.v3.x, ceiling.v3.y)
+        vertex(ceiling.v4.x, ceiling.v4.y)
         endShape(CLOSE)
 
         // Draw the floor
+        const floor = {
+          v1: {
+            x: 0,
+            y: noise(Date.now() / 10000) * ((dimensions.y * 2) / 2),
+          },
+          v2: {
+            x: dimensions.x,
+            y: noise(Date.now() / 10000 + baseSpeed) * ((dimensions.y * 2) / 2),
+          },
+          v3: { x: dimensions.x, y: dimensions.y },
+          v4: { x: 0, y: dimensions.y },
+        }
 
         beginShape()
-        vertex(0, noise(Date.now() / 10000) * ((window.innerHeight * 2) / 2))
-        vertex(
-          window.innerWidth,
-          noise(Date.now() / 10000 + baseSpeed) * ((window.innerHeight * 2) / 2)
-        )
-        vertex(window.innerWidth, window.innerHeight)
-        vertex(0, window.innerHeight)
+        vertex(floor.v1.x, floor.v1.y)
+        vertex(floor.v2.x, floor.v2.y)
+        vertex(floor.v3.x, floor.v3.y)
+        vertex(floor.v4.x, floor.v4.y)
         endShape(CLOSE)
+
+        // Let's calculate the points of intersection
+        image(img, dimensions.x / 2, copter.y, copter.size.x, copter.size.y)
+
+        const intersections = {
+          ceiling: ceiling.v3.y + (ceiling.v4.y - ceiling.v3.y) * 0.5,
+          floor: floor.v1.y + (floor.v2.y - floor.v1.y) * 0.5 - copter.size.y,
+        }
+
+        if (copter.y <= intersections.ceiling) {
+          console.log('ceiling')
+          // onEnd()
+        }
+
+        if (copter.y >= intersections.floor) {
+          console.log('Floor')
+          // onEnd()
+        }
 
         if (
           copter.y < copter.size.y / 2 ||
           copter.y + copter.size.y / 2 > canvasSize
         ) {
+          // End state
+
+          onEnd()
+
           // confirm('YEY! Your score is ' + Math.round(score))
 
-          copter.y = window.innerHeight / 2
+          copter.y = dimensions.y / 2
           // copter.size = 50
           copter.speed = baseSpeed
           score = 0
         } else {
-          image(img, canvasSize / 2, copter.y, copter.size.x, copter.size.y)
         }
       }
+
+      document.querySelector('#start-game').addEventListener('click', () => {
+        document.body.classList.add('started')
+
+        document
+          .querySelector('#intro-bumper')
+          .addEventListener('transitionend', () => {
+            started = true
+
+            song.play()
+
+            song.addEventListener('ended', () => song.play())
+          })
+
+        song
+      })
     </script>
-  </head>
+  </body>
 </html>

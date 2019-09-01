@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Invasion2000';
+    src: url('Invasion2000.woff2') format('woff2'),
+        url('Invasion2000.woff') format('woff'),
+        url('Invasion2000.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+

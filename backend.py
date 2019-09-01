@@ -67,6 +67,7 @@ class SimpleEcho(WebSocket):
     def handleMessage(self):
         # echo message back to client
         print(self.address, "message handler")
+
         if DUMMY:
             cmd = str(isDummyButtonPressed())
         else:

@@ -1,0 +1,133 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+* {
+  box-sizing: border-box;
+}
+canvas {
+  max-width: 100vw;
+  max-height: 100vh;
+  background-color: #000;
+}
+
+@font-face {
+  font-family: 'Invasion2000';
+  src: url('../fonts/Invasion2000.woff2') format('woff2'),
+    url('../fonts/Invasion2000.woff') format('woff'),
+    url('../fonts/Invasion2000.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+#intro-bumper {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1000;
+  display: flex;
+  overflow: hidden;
+  position: absolute;
+  background: #000;
+  transition: opacity 2s;
+  animation: fade-in 1.2s 1;
+}
+
+#intro-background {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  animation: fade-up 0.6s 1;
+  background: #000 url(../img/sunset.png) no-repeat center/cover;
+}
+
+#intro-helicopter {
+  top: 25%;
+  left: 10%;
+  width: 40vmin;
+  height: 40vmin;
+  position: absolute;
+  animation: heli 1s infinite;
+  animation-direction: alternate;
+  animation-timing-function: linear;
+  background: url(../img/heli.png) no-repeat center/contain;
+}
+
+#intro-text {
+  top: 10%;
+  width: 100%;
+  display: block;
+  color: tomato;
+  font-size: 4rem;
+  position: absolute;
+  text-align: center;
+  text-shadow: 4px 4px #000;
+  font-family: 'Invasion2000', sans-serif;
+}
+#copyright {
+  bottom: 0;
+  width: 100%;
+  color: #fff;
+  position: absolute;
+  text-align: center;
+  padding-bottom: 1rem;
+}
+
+#start-game {
+  margin: auto;
+  color: #fff;
+  position: relative;
+  padding: 1rem 4rem;
+  border-radius: 10px;
+  background: purple;
+  border: 4px tomato outset;
+  font-family: 'Invasion2000', monospace;
+}
+
+@keyframes fade-up {
+  0% {
+    transform: translateY(10vh);
+  }
+}
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+}
+
+@keyframes heli {
+  0% {
+    transform: translateY(1rem);
+  }
+  50% {
+    transform: translateY(2rem);
+  }
+  100% {
+    transfrom: translateY(1rem);
+  }
+}
+body {
+  background: #000;
+}
+body.started #intro-bumper {
+  opacity: 0;
+  pointer-events: none;
+}
+body:not(.game-over) #game-over {
+  display: none;
+}
+
+#game-over {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  background: tomato;
+  justify-content: center;
+}
